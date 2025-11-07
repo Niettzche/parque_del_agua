@@ -24,10 +24,11 @@ const FloatingActionButton: React.FC<Props> = ({ icon, onClick, label, isEmergen
     ),
   };
 
-  const baseClasses = "w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-white transform transition-transform hover:scale-110 focus:outline-none focus:ring-4";
+  const baseClasses =
+    'w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center text-white transition transform hover:-translate-y-1 focus:outline-none focus-visible:ring-4';
   const colorClasses = isEmergency
-    ? "bg-red-600 hover:bg-red-700 focus:ring-red-300"
-    : "bg-[var(--nlOrange)] hover:bg-[var(--nlOrangeDark)] focus:ring-[var(--nlOrangeLight)]";
+    ? 'bg-red-600 hover:bg-red-700 focus-visible:ring-red-200'
+    : 'bg-[var(--primary)] hover:bg-[var(--primary-dark)] focus-visible:ring-[var(--primary-light)]';
 
   return (
     <button onClick={onClick} className={`${baseClasses} ${colorClasses}`} aria-label={label}>

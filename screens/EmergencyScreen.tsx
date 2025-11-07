@@ -13,94 +13,133 @@ interface Props {
 }
 
 const EmergencyScreen: React.FC<Props> = ({ userLocation, onNavigateWithRoute, onBack, language, speak }) => {
-
   const text = {
     es: {
-      title: 'Emergencia',
-      call911: 'Llamar al 911',
-      call_alert: 'Simulando llamada al 911...',
-      route_title: 'Ruta a Punto de Reunión / Enfermería',
-      nearest_points: 'Puntos de ayuda más cercanos:',
-      start_route: 'Iniciar Ruta',
-      legal_notice: 'Esta es una herramienta de orientación. En una emergencia real, siga las instrucciones del personal del parque.'
+      title: 'Emergencias',
+      subtitle: 'Sigue estas acciones y alerta al personal del parque.',
+      call: 'Llamar 911',
+      simulateCall: 'Simulando llamada al 911...',
+      nearest: 'Puntos de ayuda más cercanos',
+      firstAid: 'Ruta a primeros auxilios',
+      assembly: 'Ruta a punto de reunión',
+      info: 'Comparte tu ubicación, describe la situación y mantén la calma.',
+      legal: 'Esta herramienta no reemplaza las instrucciones oficiales del personal de seguridad.',
+      meters: 'metros',
     },
     en: {
-      title: 'Emergency',
-      call911: 'Call 911',
-      call_alert: 'Simulating call to 911...',
-      route_title: 'Route to Assembly Point / First Aid',
-      nearest_points: 'Nearest help points:',
-      start_route: 'Start Route',
-      legal_notice: 'This is an orientation tool. In a real emergency, follow instructions from park staff.'
-    }
+      title: 'Emergencies',
+      subtitle: 'Follow these actions and alert park staff.',
+      call: 'Call 911',
+      simulateCall: 'Simulating call to 911...',
+      nearest: 'Closest help points',
+      firstAid: 'Route to first aid',
+      assembly: 'Route to meeting point',
+      info: 'Share your location, describe the situation, and stay calm.',
+      legal: 'This tool does not replace official instructions from safety staff.',
+      meters: 'meters',
+    },
   };
-  
+
   useEffect(() => {
     speak(text[language].title);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
-
   const nearestHelpPoints = useMemo(() => {
     if (!userLocation) return [];
-    
-    const helpPois = mockData.pois.filter(p => p.type === 'reunion' || p.type === 'enfermeria');
-    
+    const helpPois = mockData.pois.filter((p) => p.type === 'reunion' || p.type === 'enfermeria');
     return helpPois
-      .map(poi => ({
+      .map((poi) => ({
         ...poi,
-        distance: getDistance(userLocation, poi)
+        distance: getDistance(userLocation, poi),
       }))
       .sort((a, b) => a.distance - b.distance)
-      .slice(0, 2);
+      .slice(0, 3);
   }, [userLocation]);
 
+  const findNearestType = (type: 'enfermeria' | 'reunion') => {
+    if (!userLocation) return null;
+    return mockData.pois
+      .filter((poi) => poi.type === type)
+      .map((poi) => ({ ...poi, distance: getDistance(userLocation, poi) }))
+      .sort((a, b) => a.distance - b.distance)[0];
+  };
+
+  const handleQuickRoute = (type: 'enfermeria' | 'reunion') => {
+    const poi = findNearestType(type);
+    if (poi) {
+      onNavigateWithRoute(poi);
+    }
+  };
+
   const handleCall911 = () => {
-    alert(text[language].call_alert);
-    // In a real app, this would be: window.location.href = 'tel:911';
+    alert(text[language].simulateCall);
   };
 
   return (
-    <div className="p-6 h-screen flex flex-col bg-red-50 relative">
-      <BackButton onClick={onBack} />
-      
-      <div className="flex-grow flex flex-col items-center justify-center text-center pt-12">
-        <h1 className="text-5xl font-extrabold text-red-700 mb-8">{text[language].title}</h1>
+    <div className="h-[100svh] flex flex-col gap-4">
+      <section className="relative rounded-3xl bg-[var(--primary)] text-white p-5 pb-12 overflow-hidden space-y-4 animate-fade-down">
+        <BackButton onClick={onBack} className="mb-1" />
+        <p className="text-xs uppercase tracking-[0.5em] text-white/70">SOS · 24/7</p>
+        <h1 className="text-4xl font-bold font-[Poppins]">{text[language].title}</h1>
+        <p className="text-white/85 mt-3">{text[language].subtitle}</p>
+      </section>
 
-        <div className="w-full max-w-sm space-y-6">
-          <button
-            onClick={handleCall911}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-4 rounded-2xl text-2xl shadow-lg transform transition-transform hover:scale-105"
-          >
-            {text[language].call911}
-          </button>
-          
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-red-200">
-             <h2 className="text-xl font-bold text-red-800">{text[language].route_title}</h2>
-             <p className="text-gray-600 mt-2 mb-4">{text[language].nearest_points}</p>
-             <div className="space-y-3">
-               {nearestHelpPoints.map(poi => (
-                 <div key={poi.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                   <div>
-                     <p className="font-semibold text-left">{poi[`name_${language}`]}</p>
-                     <p className="text-sm text-gray-500 text-left">{Math.round(poi.distance)}m</p>
-                   </div>
-                   <button 
-                    onClick={() => onNavigateWithRoute(poi)}
-                    className="bg-[var(--nlOrange)] text-white font-semibold px-4 py-2 rounded-lg"
-                   >
-                     {text[language].start_route}
-                   </button>
-                 </div>
-               ))}
-             </div>
-          </div>
+      <section className="flex-1 rounded-3xl bg-white/95 p-4 space-y-5 overflow-y-auto">
+        <button
+          onClick={handleCall911}
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-3xl text-lg shadow-lg shadow-red-200 flex items-center justify-center gap-2"
+        >
+          🚨 {text[language].call}
+        </button>
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold text-[var(--pine)] uppercase tracking-wide">{text[language].nearest}</p>
+          {nearestHelpPoints.length === 0 && (
+            <p className="text-xs text-[var(--sage)]">{language === 'es' ? 'Activa tu ubicación para ver las opciones.' : 'Enable location to see options.'}</p>
+          )}
+          {nearestHelpPoints.map((poi) => (
+            <div key={poi.id} className="flex items-center justify-between p-4 rounded-2xl border border-[var(--chip-border)] bg-[var(--muted)]">
+              <div>
+                <p className="font-semibold text-[var(--pine)]">{poi[`name_${language}`]}</p>
+                {'distance' in poi && (
+                  <p className="text-xs text-[var(--sage)]">
+                    {Math.round(poi.distance)} {text[language].meters}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => onNavigateWithRoute(poi)}
+                className="px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm font-semibold"
+              >
+                Go
+              </button>
+            </div>
+          ))}
         </div>
-        
-        <p className="text-sm text-gray-500 mt-12 max-w-sm">
-          {text[language].legal_notice}
-        </p>
-      </div>
+
+        <div className="grid gap-3">
+          <button
+            onClick={() => handleQuickRoute('enfermeria')}
+            className="w-full flex items-center justify-between rounded-3xl border border-[var(--chip-border)] px-4 py-3 font-semibold"
+          >
+            <span>⛑️ {text[language].firstAid}</span>
+            <span>→</span>
+          </button>
+          <button
+            onClick={() => handleQuickRoute('reunion')}
+            className="w-full flex items-center justify-between rounded-3xl border border-[var(--chip-border)] px-4 py-3 font-semibold"
+          >
+            <span>📍 {text[language].assembly}</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        <div className="rounded-3xl bg-[var(--muted)] p-4 text-sm text-[var(--pine)]">
+          <p>{text[language].info}</p>
+        </div>
+        <p className="text-xs text-[var(--sage)]">{text[language].legal}</p>
+      </section>
     </div>
   );
 };

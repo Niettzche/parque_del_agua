@@ -7,6 +7,7 @@ import EmergencyScreen from './screens/EmergencyScreen';
 import { mockData } from './data';
 import type { Screen, Language, UserLocation, POI } from './types';
 import Chat from './features/Chat';
+import SplashScreen from './components/SplashScreen';
 
 const App: React.FC = () => {
   const [screen, setScreen] = useState<Screen>('welcome');
@@ -16,6 +17,8 @@ const App: React.FC = () => {
   const [isTtsEnabled, setTtsEnabled] = useState<boolean>(() => localStorage.getItem('ttsEnabled') === 'true');
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [routeDestination, setRouteDestination] = useState<POI | null>(null);
+  const [isSplashVisible, setSplashVisible] = useState(true);
+  const [isSplashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('lang', language);
@@ -34,6 +37,18 @@ const App: React.FC = () => {
    useEffect(() => {
     localStorage.setItem('ttsEnabled', String(isTtsEnabled));
   }, [isTtsEnabled]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSplashVisible(false), 1400);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isSplashVisible) {
+      const timer = window.setTimeout(() => setSplashDone(true), 600);
+      return () => window.clearTimeout(timer);
+    }
+  }, [isSplashVisible]);
 
   const speak = useCallback((text: string) => {
     if (isTtsEnabled && 'speechSynthesis' in window) {
@@ -119,15 +134,20 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[var(--muted)]">
-      <div className="max-w-lg mx-auto bg-[var(--bg)] min-h-screen shadow-lg relative">
+    <div className="bg-park-texture min-h-[100svh] px-3 py-3 relative overflow-hidden">
+      {!isSplashDone && <SplashScreen dismissed={!isSplashVisible} />}
+      <div
+        className={`mx-auto w-full max-w-[420px] min-h-[100svh] relative transition-opacity duration-500 ${
+          isSplashVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
         {renderScreen()}
         {screen !== 'welcome' && screen !== 'permissions' && userLocation && (
-           <Chat 
-             userLocation={userLocation}
-             language={language}
-             navigateToMapWithRoute={navigateToMapWithRoute} 
-             speak={speak}
+          <Chat
+            userLocation={userLocation}
+            language={language}
+            navigateToMapWithRoute={navigateToMapWithRoute}
+            speak={speak}
           />
         )}
       </div>
