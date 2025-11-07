@@ -1,0 +1,7 @@
+{
+  "name": "Parque del Agua – Wayfinding QR+NFC (MVP Demo)",
+  "description": "A navigable mockup simulating an app-less wayfinding experience for visitors of the Parque del Agua in Monterrey. It features language selection, simulated geolocation/NFC, an interactive map, sign translation, a limited knowledge base chatbot, and emergency assistance.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

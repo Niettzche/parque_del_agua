@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parque del Agua – Wayfinding Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --nlOrange: #FF6A00;
+        --nlOrangeDark: #CC5500;
+        --nlOrangeLight: #FFA64D;
+        --bg: #FFFFFF;
+        --text: #1A1A1A;
+        --muted: #F5F5F5;
+        --contrast-bg: #000000;
+        --contrast-text: #FFFFFF;
+        --contrast-primary: #FFD700;
+      }
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+      }
+      .high-contrast {
+        background-color: var(--contrast-bg);
+        color: var(--contrast-text);
+      }
+      .high-contrast .bg-white, .high-contrast .bg-\[\#FFFFFF\], .high-contrast .bg-gray-100, .high-contrast .bg-\[\#F5F5F5\] {
+        background-color: var(--contrast-bg) !important;
+        color: var(--contrast-text) !important;
+        border-color: var(--contrast-text) !important;
+      }
+      .high-contrast .text-black, .high-contrast .text-\[\#1A1A1A\] {
+        color: var(--contrast-text) !important;
+      }
+      .high-contrast .bg-\[var\(--nlOrange\)\] {
+        background-color: var(--contrast-primary) !important;
+        color: var(--contrast-bg) !important;
+      }
+      .high-contrast .text-\[var\(--nlOrange\)\] {
+         color: var(--contrast-primary) !important;
+      }
+       .high-contrast .border-gray-300 {
+        border-color: var(--contrast-text) !important;
+      }
+      .text-xl-enabled {
+        font-size: 1.2rem;
+        line-height: 1.8rem;
+      }
+      .text-xl-enabled h1 { font-size: 2.5rem; }
+      .text-xl-enabled h2 { font-size: 2rem; }
+      .text-xl-enabled button, .text-xl-enabled input { font-size: 1.25rem; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
